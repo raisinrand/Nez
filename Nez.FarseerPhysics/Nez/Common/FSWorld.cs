@@ -61,6 +61,15 @@ namespace Nez.Farseer
 			World = null;
 		}
 
+		public void Step(float dt) {
+#if DEBUG
+			TimeRuler.Instance.BeginMark("physics", Color.Blue);
+#endif
+			World.Step(MathHelper.Min(dt, MaximumUpdateDeltaTime));
+#if DEBUG
+			TimeRuler.Instance.EndMark("physics");
+#endif
+		}
 
 		public override void Update()
 		{
@@ -86,14 +95,6 @@ namespace Nez.Farseer
 					_mouseJoint = null;
 				}
 			}
-
-#if DEBUG
-			TimeRuler.Instance.BeginMark("physics", Color.Blue);
-#endif
-			World.Step(MathHelper.Min(Time.DeltaTime, MaximumUpdateDeltaTime));
-#if DEBUG
-			TimeRuler.Instance.EndMark("physics");
-#endif
 		}
 
 		#endregion
