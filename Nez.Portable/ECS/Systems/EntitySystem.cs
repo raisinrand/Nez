@@ -73,7 +73,10 @@ namespace Nez
 		protected virtual void Process(List<Entity> entities)
 		{
 		}
-
+		
+		protected virtual void ProcessUpdate(List<Entity> entities)
+		{
+		}
 
 		protected virtual void LateProcess(List<Entity> entities)
 		{
@@ -88,9 +91,13 @@ namespace Nez
 		public void Update()
 		{
 			Begin();
-			Process(_entities);
+			ProcessUpdate(_entities);
 		}
 
+		public void FixedUpdate()
+		{
+			Process(_entities);
+		}
 
 		public void LateUpdate()
 		{

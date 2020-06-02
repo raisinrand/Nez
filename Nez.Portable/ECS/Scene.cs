@@ -405,13 +405,9 @@ namespace Nez
 			Unload();
 		}
 
-		public virtual void Update()
-		{
-			// we set the RenderTarget here so that the Viewport will match the RenderTarget properly
-			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
-
-			// update our lists in case they have any changes
+		public virtual void FixedUpdate() {
 			Entities.UpdateLists();
+			Time.EnterFixedUpdate();
 
 			// update our SceneComponents
 			for (var i = _sceneComponents.Length - 1; i >= 0; i--)
@@ -420,12 +416,25 @@ namespace Nez
 					_sceneComponents.Buffer[i].Update();
 			}
 
+			if (EntityProcessors != null)
+				EntityProcessors.FixedUpdate();
+			// update our Entities
+			Entities.Update();
+			Time.ExitFixedUpdate();
+		}
+
+		public virtual void Update(int fixedUpdates)
+		{
+			// we set the RenderTarget here so that the Viewport will match the RenderTarget properly
+			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
+
+			// update our lists in case they have any changes
+			Entities.UpdateLists();
+
 			// update our EntityProcessors
 			if (EntityProcessors != null)
 				EntityProcessors.Update();
 
-			// update our Entities
-			Entities.Update();
 
 			if (EntityProcessors != null)
 				EntityProcessors.LateUpdate();

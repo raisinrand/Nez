@@ -52,6 +52,11 @@ namespace Nez
 		public new static NezContentManager Content;
 
 		/// <summary>
+		/// the maximum number of fixed updates allowed in a frame before giving up and skipping time
+		/// </summary>
+		public int MaxFixedUpdatesPerFrame {get;set;} = 5;
+
+		/// <summary>
 		/// default SamplerState used by Materials. Note that this must be set at launch! Changing it after that time will result in only
 		/// Materials created after it was set having the new SamplerState
 		/// </summary>
@@ -96,6 +101,11 @@ namespace Nez
 		int _frameCounter = 0;
 		string _windowTitle;
 #endif
+
+		/// <summary>
+		/// accumulated time in milliseconds since the last frame update
+		/// </summary>
+		float timeAcc;
 
 		Scene _scene;
 		Scene _nextScene;
@@ -262,7 +272,27 @@ namespace Nez
 				    (_sceneTransition != null &&
 				     (!_sceneTransition._loadsNewScene || _sceneTransition._isNewSceneLoaded)))
 				{
-					_scene.Update();
+					
+					timeAcc += Time.UnscaledDeltaTime;
+					int fixedUpdates = 0;
+					while ( timeAcc >= Time.FixedTimeStep )
+					{
+						// previousState = currentState;
+						timeAcc -= Time.FixedTimeStep;
+						_scene.FixedUpdate();
+						fixedUpdates+=1;
+						if(fixedUpdates > MaxFixedUpdatesPerFrame) {
+							timeAcc = 0;
+							Debug.Log("Can't keep up! Skipping fixed updates.");
+							break;
+						}
+					}
+
+					// TODO: render data interpolation
+					// const double alpha = accumulator / dt;
+					// interpolate() ...
+
+					_scene.Update(fixedUpdates);
 				}
 
 				if (_nextScene != null)

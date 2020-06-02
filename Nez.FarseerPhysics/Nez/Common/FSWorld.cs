@@ -11,9 +11,9 @@ namespace Nez.Farseer
 		public World World;
 
 		/// <summary>
-		/// minimum delta time step for the simulation. The min of Time.deltaTime and this will be used for the physics step
+		/// maximum delta time step for the simulation. The min of Time.deltaTime and this will be used for the physics step
 		/// </summary>
-		public float MinimumUpdateDeltaTime = 1f / 30;
+		public float MaximumUpdateDeltaTime = 1f / 30;
 
 		/// <summary>
 		/// if true, the left mouse button will be used for picking and dragging physics objects around
@@ -90,7 +90,7 @@ namespace Nez.Farseer
 #if DEBUG
 			TimeRuler.Instance.BeginMark("physics", Color.Blue);
 #endif
-			World.Step(MathHelper.Min(Time.DeltaTime, MinimumUpdateDeltaTime));
+			World.Step(MathHelper.Min(Time.DeltaTime, MaximumUpdateDeltaTime));
 #if DEBUG
 			TimeRuler.Instance.EndMark("physics");
 #endif

@@ -16,17 +16,17 @@ namespace Nez
 		/// <summary>
 		/// delta time from the previous frame to the current, scaled by timeScale
 		/// </summary>
-		public static float DeltaTime;
+		public static float DeltaTime => UnscaledDeltaTime * TimeScale;
+
+		/// <summary>
+		/// the fixed time step in seconds
+		/// </summary>
+		public static float FixedTimeStep = 1f/30f;
 
 		/// <summary>
 		/// unscaled version of deltaTime. Not affected by timeScale
 		/// </summary>
-		public static float UnscaledDeltaTime;
-
-		/// <summary>
-		/// secondary deltaTime for use when you need to scale two different deltas simultaneously
-		/// </summary>
-		public static float AltDeltaTime;
+		public static float UnscaledDeltaTime => IsFixedUpdate ? FixedTimeStep : dt;
 
 		/// <summary>
 		/// total time since the Scene was loaded
@@ -39,24 +39,31 @@ namespace Nez
 		public static float TimeScale = 1f;
 
 		/// <summary>
-		/// time scale of altDeltaTime
-		/// </summary>
-		public static float AltTimeScale = 1f;
-
-		/// <summary>
 		/// total number of frames that have passed
 		/// </summary>
 		public static uint FrameCount;
 
+		/// <summary>
+		/// is the game currently processing a fixed update
+		/// </summary>
+		public static bool IsFixedUpdate {get; private set;}
+
+		static float dt;
+
 
 		internal static void Update(float dt)
 		{
+			Time.dt = dt;
 			TotalTime += dt;
-			DeltaTime = dt * TimeScale;
-			AltDeltaTime = dt * AltTimeScale;
-			UnscaledDeltaTime = dt;
 			TimeSinceSceneLoad += dt;
 			FrameCount++;
+		}
+
+		internal static void EnterFixedUpdate() {
+			IsFixedUpdate = true;
+		}
+		internal static void ExitFixedUpdate() {
+			IsFixedUpdate = false;
 		}
 
 

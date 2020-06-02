@@ -19,6 +19,9 @@ namespace Nez
 		/// <param name="entity">Entity.</param>
 		public abstract void Process(Entity entity);
 
+		public virtual void ProcessUpdate(Entity entity)
+		{
+		}
 
 		public virtual void LateProcess(Entity entity)
 		{
@@ -35,6 +38,11 @@ namespace Nez
 				Process(entities[i]);
 		}
 
+		protected override void ProcessUpdate(List<Entity> entities)
+		{
+			for (var i = 0; i < entities.Count; i++)
+				ProcessUpdate(entities[i]);
+		}
 
 		protected override void LateProcess(List<Entity> entities)
 		{
