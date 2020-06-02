@@ -292,7 +292,7 @@ namespace Nez
 					// const double alpha = accumulator / dt;
 					// interpolate() ...
 
-					_scene.Update(fixedUpdates);
+					_scene.Update();
 				}
 
 				if (_nextScene != null)

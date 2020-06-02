@@ -423,7 +423,7 @@ namespace Nez
 			Time.ExitFixedUpdate();
 		}
 
-		public virtual void Update(int fixedUpdates)
+		public virtual void Update()
 		{
 			// we set the RenderTarget here so that the Viewport will match the RenderTarget properly
 			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
