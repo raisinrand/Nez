@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 
@@ -248,6 +249,61 @@ namespace Nez
 
 			return null;
 		}
+
+		/// <summary>
+		/// Gets the first component of type T and returns it. Optionally skips checking un-initialized Components (Components who have not yet had their
+		/// onAddedToEntity method called). If no components are found returns null.
+		/// </summary>
+		/// <returns>The component.</returns>
+		/// <param name="onlyReturnInitializedComponents">If set to <c>true</c> only return initialized components.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Component GetComponent(Type type, bool onlyReturnInitializedComponents)
+		{
+			for (var i = 0; i < _components.Length; i++)
+			{
+				var component = _components.Buffer[i];
+				if (type.IsAssignableFrom(component.GetType()))
+					return component;
+			}
+
+			// we optionally check the pending components just in case addComponent and getComponent are called in the same frame
+			if (!onlyReturnInitializedComponents)
+			{
+				for (var i = 0; i < _componentsToAdd.Count; i++)
+				{
+					var component = _componentsToAdd[i];
+				if (type.IsAssignableFrom(component.GetType()))
+						return component;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Gets all the components of type type without a List allocation
+		/// </summary>
+		/// <param name="components">Components.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void GetComponents(Type type, List<Component> components)
+		{
+			for (var i = 0; i < _components.Length; i++)
+			{
+				var component = _components.Buffer[i];
+				if (type.IsAssignableFrom(component.GetType()))
+					components.Add(component);
+			}
+
+			// we also check the pending components just in case addComponent and getComponent are called in the same frame
+			for (var i = 0; i < _componentsToAdd.Count; i++)
+			{
+				var component = _componentsToAdd[i];
+				if (type.IsAssignableFrom(component.GetType()))
+					components.Add(component);
+			}
+		}
+
 
 		/// <summary>
 		/// Gets all the components of type T without a List allocation
