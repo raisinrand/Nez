@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Nez.Farseer
 {
-	public class FSRigidBody : Component, IUpdatable
+	public class FSRigidBody : Component
 	{
 		public Body Body;
 
@@ -196,7 +196,7 @@ namespace Nez.Farseer
 		#endregion
 
 
-		void IUpdatable.Update()
+		public void UpdateTransforms()
 		{
 			if (Body == null || !Body.IsAwake)
 				return;
