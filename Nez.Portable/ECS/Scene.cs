@@ -408,6 +408,8 @@ namespace Nez
 		public virtual void FixedUpdate() {
 			Entities.UpdateLists();
 			Time.EnterFixedUpdate();
+			// update our Entities
+			Entities.Update();
 
 			// update our SceneComponents
 			for (var i = _sceneComponents.Length - 1; i >= 0; i--)
@@ -418,8 +420,6 @@ namespace Nez
 
 			if (EntityProcessors != null)
 				EntityProcessors.FixedUpdate();
-			// update our Entities
-			Entities.Update();
 			Time.ExitFixedUpdate();
 		}
 
