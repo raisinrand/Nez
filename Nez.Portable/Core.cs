@@ -247,6 +247,8 @@ namespace Nez
 
 			// update all our systems and global managers
 			Time.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
+			// TODO: add this back and make another class for fixedupdate input
+			// Input.Update();
 
 			if (ExitOnEscapeKeypress &&
 			    (Input.IsKeyDown(Keys.Escape) || Input.GamePads[0].IsButtonReleased(Buttons.Back)))
