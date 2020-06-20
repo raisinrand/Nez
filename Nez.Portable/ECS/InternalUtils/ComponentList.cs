@@ -343,6 +343,27 @@ namespace Nez
 			return components;
 		}
 
+
+		/// <summary>
+		/// Gets the first component of type T and returns it. Optionally skips checking un-initialized Components (Components who have not yet had their
+		/// onAddedToEntity method called). If no components are found returns null.
+		/// </summary>
+		/// <returns>The component.</returns>
+		/// <param name="onlyReturnInitializedComponents">If set to <c>true</c> only return initialized components.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void ReplaceComponent(Component replacement)
+		{
+			for (var i = 0; i < _components.Length; i++)
+			{
+				var component = _components.Buffer[i];
+				if (replacement.GetType() == component.GetType()) {
+					_components.Buffer[i] = replacement;
+					return;
+				}
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void Update()
 		{
