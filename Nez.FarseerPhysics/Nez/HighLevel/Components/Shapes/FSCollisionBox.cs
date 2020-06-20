@@ -11,6 +11,10 @@ namespace Nez.Farseer
 
 		public FSCollisionBox()
 		{
+			// RANDY TODO: resolve farseer issues with delayed initialization better
+			// below is temporary fix
+			_verts = PolygonTools.CreateRectangle(FSConvert.DisplayToSim * _width / 2,
+				FSConvert.DisplayToSim * _height / 2);
 		}
 
 
