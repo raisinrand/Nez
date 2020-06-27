@@ -19,7 +19,7 @@ namespace Nez.UI
 		/// called when the mouse moves only on an element that returned true for onMousePressed. It is safe to call stage.removeInputFocusListener
 		/// here if you are uninterested in the onMouseUp event.
 		/// </summary>
-		/// <param name="mousePos">Mouse position.</param>
+		/// <param name="mousePos">*********LOCAL RELATIVE****** Mouse position.</param>
 		void OnMouseMoved(Vector2 mousePos);
 
 		/// <summary>

@@ -183,6 +183,8 @@ namespace Nez.UI
 			lastX = mousePos.X;
 			lastY = mousePos.Y;
 			SetBounds(Mathf.Round(windowX), Mathf.Round(windowY), Mathf.Round(width), Mathf.Round(height));
+		
+			KeepWithinStage();
 		}
 
 
@@ -247,8 +249,6 @@ namespace Nez.UI
 
 		public override void Draw(Batcher batcher, float parentAlpha)
 		{
-			KeepWithinStage();
-
 			if (style.StageBackground != null)
 			{
 				var stagePos = StageToLocalCoordinates(Vector2.Zero);
