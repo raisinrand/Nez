@@ -105,6 +105,10 @@ namespace Nez
 
 		public TiledSpriteRenderer()
 		{
+			Material = new Material
+			{
+				SamplerState = Core.DefaultWrappedSamplerState
+			};
 		}
 
 		public TiledSpriteRenderer(Sprite sprite) : base(sprite)
