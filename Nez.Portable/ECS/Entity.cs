@@ -197,8 +197,7 @@ namespace Nez
 			Name = name;
 			Id = _idGenerator++;
 
-			if (Core.entitySystemsEnabled)
-				componentBits = new BitSet();
+			componentBits = new BitSet();
 		}
 
 		public Entity() : this(Utils.RandomString(8))

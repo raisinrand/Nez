@@ -59,10 +59,10 @@ namespace Nez
 			FrameCount++;
 		}
 
-		internal static void EnterFixedUpdate() {
+		public static void EnterFixedUpdate() {
 			IsFixedUpdate = true;
 		}
-		internal static void ExitFixedUpdate() {
+		public static void ExitFixedUpdate() {
 			IsFixedUpdate = false;
 		}
 

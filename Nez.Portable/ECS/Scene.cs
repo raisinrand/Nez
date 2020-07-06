@@ -213,7 +213,7 @@ namespace Nez
 		RenderTarget2D _destinationRenderTarget;
 		Action<Texture2D> _screenshotRequestCallback;
 
-		internal readonly FastList<SceneComponent> _sceneComponents = new FastList<SceneComponent>();
+		public readonly FastList<SceneComponent> _sceneComponents = new FastList<SceneComponent>();
 		internal FastList<Renderer> _renderers = new FastList<Renderer>();
 		internal readonly FastList<Renderer> _afterPostProcessorRenderers = new FastList<Renderer>();
 		internal readonly FastList<PostProcessor> _postProcessors = new FastList<PostProcessor>();
@@ -312,8 +312,7 @@ namespace Nez
 			var cameraEntity = CreateEntity("camera");
 			Camera = cameraEntity.AddComponent(new Camera());
 
-			if (Core.entitySystemsEnabled)
-				EntityProcessors = new EntityProcessorList();
+			EntityProcessors = new EntityProcessorList();
 
 			// setup our resolution policy. we'll commit it in begin
 			_resolutionPolicy = _defaultSceneResolutionPolicy;
@@ -363,8 +362,7 @@ namespace Nez
 			UpdateResolutionScaler();
 			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
 
-			if (EntityProcessors != null)
-				EntityProcessors.Begin();
+			EntityProcessors.Begin();
 			Core.Emitter.AddObserver(CoreEvents.GraphicsDeviceReset, OnGraphicsDeviceReset);
 			Core.Emitter.AddObserver(CoreEvents.OrientationChanged, OnOrientationChanged);
 
@@ -399,8 +397,7 @@ namespace Nez
 			if (_destinationRenderTarget != null)
 				_destinationRenderTarget.Dispose();
 
-			if (EntityProcessors != null)
-				EntityProcessors.End();
+			EntityProcessors.End();
 
 			Unload();
 		}
@@ -418,8 +415,7 @@ namespace Nez
 					_sceneComponents.Buffer[i].Update();
 			}
 
-			if (EntityProcessors != null)
-				EntityProcessors.FixedUpdate();
+			EntityProcessors.FixedUpdate();
 			Time.ExitFixedUpdate();
 		}
 
@@ -432,12 +428,10 @@ namespace Nez
 			Entities.UpdateLists();
 
 			// update our EntityProcessors
-			if (EntityProcessors != null)
-				EntityProcessors.Update();
+			EntityProcessors.Update();
 
 
-			if (EntityProcessors != null)
-				EntityProcessors.LateUpdate();
+			EntityProcessors.LateUpdate();
 
 			// we update our renderables after entity.update in case any new Renderables were added
 			RenderableComponents.UpdateLists();

@@ -90,11 +90,6 @@ namespace Nez
 		/// </summary>
 		internal static Core _instance;
 
-		/// <summary>
-		/// internal flag used to determine if EntitySystems should be used or not
-		/// </summary>
-		internal static bool entitySystemsEnabled;
-
 #if DEBUG
 		internal static long drawCalls;
 		TimeSpan _frameCounterElapsedTime = TimeSpan.Zero;
@@ -175,9 +170,6 @@ namespace Nez
 			Content = new NezGlobalContentManager(Services, base.Content.RootDirectory);
 			IsMouseVisible = true;
 			IsFixedTimeStep = false;
-
-			entitySystemsEnabled = enableEntitySystems;
-
 			// setup systems
 			RegisterGlobalManager(_coroutineManager);
 			RegisterGlobalManager(new TweenManager());
