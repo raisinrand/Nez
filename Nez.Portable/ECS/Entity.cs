@@ -291,6 +291,10 @@ namespace Nez
 				var child = Transform.GetChild(i);
 				child.Entity.Destroy();
 			}
+
+			// TODO: make this happen immediately. some issues if we do that rn.
+			// DetachFromScene();
+			// OnRemovedFromScene();
 		}
 
 		/// <summary>
@@ -354,8 +358,8 @@ namespace Nez
 			// clone Components
 			for (var i = 0; i < entity.Components.Count; i++)
 				AddComponent(entity.Components[i].Clone());
-			for (var i = 0; i < entity.Components._componentsToAdd.Count; i++)
-				AddComponent(entity.Components._componentsToAdd[i].Clone());
+			// for (var i = 0; i < entity.Components._componentsToAdd.Count; i++)
+			// 	AddComponent(entity.Components._componentsToAdd[i].Clone());
 
 			// clone any children of the Entity.transform
 			for (var i = 0; i < entity.Transform.ChildCount; i++)
@@ -436,12 +440,12 @@ namespace Nez
 		/// </summary>
 		/// <returns>The component.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public T GetComponent<T>() where T : Component => Components.GetComponent<T>(false);
+		public T GetComponent<T>() where T : Component => Components.GetComponent<T>();
 
 		/// <summary>
 		/// checks to see if the Entity has the component
 		/// </summary>
-		public bool HasComponent<T>() where T : Component => Components.GetComponent<T>(false) != null;
+		public bool HasComponent<T>() where T : Component => Components.GetComponent<T>() != null;
 
 		/// <summary>
 		/// Gets the first Component of type T and returns it. If no Component is found the Component will be created.
@@ -450,23 +454,11 @@ namespace Nez
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T GetOrCreateComponent<T>() where T : Component, new()
 		{
-			var comp = Components.GetComponent<T>(true);
+			var comp = Components.GetComponent<T>();
 			if (comp == null)
 				comp = AddComponent<T>();
 
 			return comp;
-		}
-
-		/// <summary>
-		/// Gets the first component of type T and returns it optionally skips checking un-initialized Components (Components who have not yet had their
-		/// onAddedToEntity method called). If no components are found returns null.
-		/// </summary>
-		/// <returns>The component.</returns>
-		/// <param name="onlyReturnInitializedComponents">If set to <c>true</c> only return initialized components.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public T GetComponent<T>(bool onlyReturnInitializedComponents) where T : Component
-		{
-			return Components.GetComponent<T>(onlyReturnInitializedComponents);
 		}
 
 		/// <summary>

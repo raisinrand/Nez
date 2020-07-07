@@ -305,6 +305,8 @@ namespace Nez
 
 		public Scene()
 		{
+			EntityProcessors = new EntityProcessorList();
+			
 			Entities = new EntityList(this);
 			RenderableComponents = new RenderableComponentList();
 			Content = new NezContentManager();
@@ -312,7 +314,6 @@ namespace Nez
 			var cameraEntity = CreateEntity("camera");
 			Camera = cameraEntity.AddComponent(new Camera());
 
-			EntityProcessors = new EntityProcessorList();
 
 			// setup our resolution policy. we'll commit it in begin
 			_resolutionPolicy = _defaultSceneResolutionPolicy;

@@ -25,12 +25,12 @@ namespace Nez
 		/// <summary>
 		/// The list of components that were added this frame. Used to group the components so we can process them simultaneously
 		/// </summary>
-		internal List<Component> _componentsToAdd = new List<Component>();
+		// internal List<Component> _componentsToAdd = new List<Component>();
 
 		/// <summary>
 		/// The list of components that were marked for removal this frame. Used to group the components so we can process them simultaneously
 		/// </summary>
-		List<Component> _componentsToRemove = new List<Component>();
+		// List<Component> _componentsToRemove = new List<Component>();
 
 		List<Component> _tempBufferList = new List<Component>();
 
@@ -61,22 +61,30 @@ namespace Nez
 
 		public void Add(Component component)
 		{
-			_componentsToAdd.Add(component);
+			if (component is RenderableComponent)
+				_entity.Scene.RenderableComponents.Add(component as RenderableComponent);
+
+			if (component is IUpdatable)
+				_updatableComponents.Add(component as IUpdatable);
+
+			_entity.componentBits.Set(ComponentTypeManager.GetIndexFor(component.GetType()));
+			_entity.Scene.EntityProcessors.OnComponentAdded(_entity);
+
+			_components.Add(component);
+			_tempBufferList.Add(component);
+			_isComponentListUnsorted = true;
+
+			component.OnAddedToEntity();
+
+			// component.enabled checks both the Entity and the Component
+			if (component.Enabled)
+				component.OnEnabled();
 		}
 
 		public void Remove(Component component)
 		{
-			Debug.WarnIf(_componentsToRemove.Contains(component),
-				"You are trying to remove a Component ({0}) that you already removed", component);
-
-			// this may not be a live Component so we have to watch out for if it hasnt been processed yet but it is being removed in the same frame
-			if (_componentsToAdd.Contains(component))
-			{
-				_componentsToAdd.Remove(component);
-				return;
-			}
-
-			_componentsToRemove.Add(component);
+			HandleRemove(component);
+			_components.Remove(component);
 		}
 
 		/// <summary>
@@ -89,8 +97,6 @@ namespace Nez
 
 			_components.Clear();
 			_updatableComponents.Clear();
-			_componentsToAdd.Clear();
-			_componentsToRemove.Clear();
 		}
 
 		internal void DeregisterAllComponents()
@@ -134,55 +140,6 @@ namespace Nez
 		/// </summary>
 		void UpdateLists()
 		{
-			// handle removals
-			if (_componentsToRemove.Count > 0)
-			{
-				for (int i = 0; i < _componentsToRemove.Count; i++)
-				{
-					HandleRemove(_componentsToRemove[i]);
-					_components.Remove(_componentsToRemove[i]);
-				}
-
-				_componentsToRemove.Clear();
-			}
-
-			// handle additions
-			if (_componentsToAdd.Count > 0)
-			{
-				for (int i = 0, count = _componentsToAdd.Count; i < count; i++)
-				{
-					var component = _componentsToAdd[i];
-					if (component is RenderableComponent)
-						_entity.Scene.RenderableComponents.Add(component as RenderableComponent);
-
-					if (component is IUpdatable)
-						_updatableComponents.Add(component as IUpdatable);
-
-					_entity.componentBits.Set(ComponentTypeManager.GetIndexFor(component.GetType()));
-					_entity.Scene.EntityProcessors.OnComponentAdded(_entity);
-
-					_components.Add(component);
-					_tempBufferList.Add(component);
-				}
-
-				// clear before calling onAddedToEntity in case more Components are added then
-				_componentsToAdd.Clear();
-				_isComponentListUnsorted = true;
-
-				// now that all components are added to the scene, we loop through again and call onAddedToEntity/onEnabled
-				for (var i = 0; i < _tempBufferList.Count; i++)
-				{
-					var component = _tempBufferList[i];
-					component.OnAddedToEntity();
-
-					// component.enabled checks both the Entity and the Component
-					if (component.Enabled)
-						component.OnEnabled();
-				}
-
-				_tempBufferList.Clear();
-			}
-
 			if (_isComponentListUnsorted)
 			{
 				_updatableComponents.Sort(compareUpdatableOrder);
@@ -215,7 +172,7 @@ namespace Nez
 		/// <param name="onlyReturnInitializedComponents">If set to <c>true</c> only return initialized components.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T GetComponent<T>(bool onlyReturnInitializedComponents) where T : Component
+		public T GetComponent<T>() where T : Component
 		{
 			for (var i = 0; i < _components.Length; i++)
 			{
@@ -223,18 +180,6 @@ namespace Nez
 				if (component is T)
 					return component as T;
 			}
-
-			// we optionally check the pending components just in case addComponent and getComponent are called in the same frame
-			if (!onlyReturnInitializedComponents)
-			{
-				for (var i = 0; i < _componentsToAdd.Count; i++)
-				{
-					var component = _componentsToAdd[i];
-					if (component is T)
-						return component as T;
-				}
-			}
-
 			return null;
 		}
 
@@ -245,24 +190,13 @@ namespace Nez
 		/// <returns>The component.</returns>
 		/// <param name="onlyReturnInitializedComponents">If set to <c>true</c> only return initialized components.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Component GetComponent(Type type, bool onlyReturnInitializedComponents)
+		public Component GetComponent(Type type)
 		{
 			for (var i = 0; i < _components.Length; i++)
 			{
 				var component = _components.Buffer[i];
 				if (type.IsAssignableFrom(component.GetType()))
 					return component;
-			}
-
-			// we optionally check the pending components just in case addComponent and getComponent are called in the same frame
-			if (!onlyReturnInitializedComponents)
-			{
-				for (var i = 0; i < _componentsToAdd.Count; i++)
-				{
-					var component = _componentsToAdd[i];
-				if (type.IsAssignableFrom(component.GetType()))
-						return component;
-				}
 			}
 
 			return null;
@@ -282,14 +216,6 @@ namespace Nez
 				if (type.IsAssignableFrom(component.GetType()))
 					components.Add(component);
 			}
-
-			// we also check the pending components just in case addComponent and getComponent are called in the same frame
-			for (var i = 0; i < _componentsToAdd.Count; i++)
-			{
-				var component = _componentsToAdd[i];
-				if (type.IsAssignableFrom(component.GetType()))
-					components.Add(component);
-			}
 		}
 
 
@@ -304,14 +230,6 @@ namespace Nez
 			for (var i = 0; i < _components.Length; i++)
 			{
 				var component = _components.Buffer[i];
-				if (component is T)
-					components.Add(component as T);
-			}
-
-			// we also check the pending components just in case addComponent and getComponent are called in the same frame
-			for (var i = 0; i < _componentsToAdd.Count; i++)
-			{
-				var component = _componentsToAdd[i];
 				if (component is T)
 					components.Add(component as T);
 			}
@@ -370,12 +288,6 @@ namespace Nez
 			{
 				if (_components.Buffer[i].Enabled)
 					_components.Buffer[i].OnEntityTransformChanged(comp);
-			}
-
-			for (var i = 0; i < _componentsToAdd.Count; i++)
-			{
-				if (_componentsToAdd[i].Enabled)
-					_componentsToAdd[i].OnEntityTransformChanged(comp);
 			}
 		}
 
