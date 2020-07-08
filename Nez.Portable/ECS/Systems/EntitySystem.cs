@@ -73,41 +73,11 @@ namespace Nez
 		protected virtual void Process(List<Entity> entities)
 		{
 		}
-		
-		protected virtual void ProcessUpdate(List<Entity> entities)
-		{
-		}
 
-		protected virtual void LateProcess(List<Entity> entities)
-		{
-		}
-
-
-		protected virtual void Begin()
-		{
-		}
-
-
-		public void Update()
-		{
-			Begin();
-			ProcessUpdate(_entities);
-		}
-
-		public void FixedUpdate()
+		public void Execute()
 		{
 			Process(_entities);
 		}
 
-		public void LateUpdate()
-		{
-			LateProcess(_entities);
-			End();
-		}
-
-
-		protected virtual void End()
-		{
-		}
 	}
 }

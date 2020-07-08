@@ -363,7 +363,6 @@ namespace Nez
 			UpdateResolutionScaler();
 			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
 
-			EntityProcessors.Begin();
 			Core.Emitter.AddObserver(CoreEvents.GraphicsDeviceReset, OnGraphicsDeviceReset);
 			Core.Emitter.AddObserver(CoreEvents.OrientationChanged, OnOrientationChanged);
 
@@ -398,8 +397,6 @@ namespace Nez
 			if (_destinationRenderTarget != null)
 				_destinationRenderTarget.Dispose();
 
-			EntityProcessors.End();
-
 			Unload();
 		}
 
@@ -416,7 +413,7 @@ namespace Nez
 					_sceneComponents.Buffer[i].Update();
 			}
 
-			EntityProcessors.FixedUpdate();
+			EntityProcessors.Execute();
 			Time.ExitFixedUpdate();
 		}
 
@@ -427,12 +424,6 @@ namespace Nez
 
 			// update our lists in case they have any changes
 			Entities.UpdateLists();
-
-			// update our EntityProcessors
-			EntityProcessors.Update();
-
-
-			EntityProcessors.LateUpdate();
 
 			// we update our renderables after entity.update in case any new Renderables were added
 			RenderableComponents.UpdateLists();

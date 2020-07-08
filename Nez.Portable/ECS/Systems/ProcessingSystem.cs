@@ -17,10 +17,7 @@ namespace Nez
 
 		protected override void Process(List<Entity> entities)
 		{
-			// We replace the basic entity system with our own that doesn't take into account entities
-			Begin();
 			Process();
-			End();
 		}
 
 		/// <summary>

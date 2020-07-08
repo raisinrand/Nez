@@ -152,8 +152,6 @@ namespace Nez.Farseer
 
 		public override void Initialize()
 		{
-			// TODO: get rid of this
-			CreateBody();
 		}
 
 

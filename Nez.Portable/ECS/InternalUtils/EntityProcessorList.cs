@@ -57,34 +57,10 @@ namespace Nez
 				_processors[i].Remove(entity);
 		}
 
-
-		public void Begin()
-		{
-		}
-
-
-		public void Update()
+		public void Execute()
 		{
 			for (var i = 0; i < _processors.Count; i++)
-				_processors[i].Update();
-		}
-
-		public void FixedUpdate()
-		{
-			for (var i = 0; i < _processors.Count; i++)
-				_processors[i].FixedUpdate();
-		}
-
-
-		public void LateUpdate()
-		{
-			for (var i = 0; i < _processors.Count; i++)
-				_processors[i].LateUpdate();
-		}
-
-
-		public void End()
-		{
+				_processors[i].Execute();
 		}
 
 
