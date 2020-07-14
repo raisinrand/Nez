@@ -378,7 +378,6 @@ namespace Nez
 		{
 #if DEBUG
 			TimeRuler.Instance.EndMark("update");
-			DebugConsole.Instance.Update();
 			drawCalls = 0;
 #endif
 		}

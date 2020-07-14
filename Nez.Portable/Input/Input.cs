@@ -23,6 +23,9 @@ namespace Nez
 		static internal FastList<VirtualInput> _virtualInputs = new FastList<VirtualInput>();
 		static int _maxSupportedGamePads;
 
+		// TODO: this is hacky
+		static bool clearKeyboard;
+
 		/// <summary>
 		/// the TouchInput details when on a device that supports touch
 		/// </summary>
@@ -76,6 +79,7 @@ namespace Nez
 			_currentMouseState = Mouse.GetState();
 
 			MaxSupportedGamePads = 1;
+			clearKeyboard = false;
 		}
 
 
@@ -94,6 +98,14 @@ namespace Nez
 
 			for (var i = 0; i < _virtualInputs.Length; i++)
 				_virtualInputs.Buffer[i].Update();
+
+			clearKeyboard = false;
+		}
+
+		// clears all keyboard inputs for this frame
+		// used by debug console
+		public static void ClearKeyboard() {
+			clearKeyboard = true;
 		}
 
 		/// <summary>
@@ -149,6 +161,7 @@ namespace Nez
 		/// <returns><c>true</c>, if key pressed was gotten, <c>false</c> otherwise.</returns>
 		public static bool IsKeyPressed(Keys key)
 		{
+			if(clearKeyboard) return false;
 			return _currentKbState.IsKeyDown(key) && !_previousKbState.IsKeyDown(key);
 		}
 
@@ -159,6 +172,7 @@ namespace Nez
 		/// <returns><c>true</c>, if key down was gotten, <c>false</c> otherwise.</returns>
 		public static bool IsKeyDown(Keys key)
 		{
+			if(clearKeyboard) return false;
 			return _currentKbState.IsKeyDown(key);
 		}
 
@@ -179,6 +193,7 @@ namespace Nez
 		/// <returns><c>true</c>, if key pressed was gotten, <c>false</c> otherwise.</returns>
 		public static bool IsKeyPressed(Keys keyA, Keys keyB)
 		{
+			if(clearKeyboard) return false;
 			return IsKeyPressed(keyA) || IsKeyPressed(keyB);
 		}
 
@@ -189,6 +204,7 @@ namespace Nez
 		/// <returns><c>true</c>, if key down was gotten, <c>false</c> otherwise.</returns>
 		public static bool IsKeyDown(Keys keyA, Keys keyB)
 		{
+			if(clearKeyboard) return false;
 			return IsKeyDown(keyA) || IsKeyDown(keyB);
 		}
 

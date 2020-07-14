@@ -158,7 +158,7 @@ namespace Nez.Console
 
 		#region Updating and Rendering
 
-		internal void Update()
+		public void Update()
 		{
 			if (IsOpen)
 				UpdateOpen();
@@ -217,6 +217,7 @@ namespace Nez.Console
 					break;
 				}
 			}
+			Input.ClearKeyboard();
 		}
 
 
