@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using Microsoft.Xna.Framework;
 
 
@@ -12,6 +13,12 @@ namespace Nez.Farseer
 		FSBodyDef _bodyDef = new FSBodyDef();
 		bool _ignoreTransformChanges;
 		internal List<FSJoint> _joints = new List<FSJoint>();
+
+		// TODO: memory concern here
+		List<CollisionEventInfo> collisionEvents = new List<CollisionEventInfo>();
+		public IEnumerable<CollisionEventInfo> CollisionEvents => collisionEvents;
+		List<SeparationEventInfo> separationEvents = new List<SeparationEventInfo>();
+		public IEnumerable<SeparationEventInfo> SeparationEvents => separationEvents;
 
 
 		#region Configuration
@@ -236,6 +243,9 @@ namespace Nez.Farseer
 
 			for (var i = 0; i < _joints.Count; i++)
 				_joints[i].CreateJoint();
+
+			Body.OnCollision += OnCollisionEvent;
+			Body.OnSeparation += OnSeparationEvent;
 		}
 
 
@@ -252,6 +262,38 @@ namespace Nez.Farseer
 
 			Body.World.RemoveBody(Body);
 			Body = null;
+		}
+
+		bool OnCollisionEvent(Fixture fixtureA, Fixture fixtureB, Contact contact) {
+			collisionEvents.Add(new CollisionEventInfo {
+				shapeA = (FSCollisionShape)fixtureA.UserData,
+				shapeB = (FSCollisionShape)fixtureB.UserData,
+				contact = contact
+			});
+			return true;
+		}
+		void OnSeparationEvent(Fixture fixtureA, Fixture fixtureB) {
+			separationEvents.Add(new SeparationEventInfo {
+				shapeA = (FSCollisionShape)fixtureA.UserData,
+				shapeB = (FSCollisionShape)fixtureB.UserData,
+			});
+		}
+
+
+		public void Reset() {
+			collisionEvents.Clear();
+			separationEvents.Clear();
+		}
+
+
+		public struct CollisionEventInfo {
+			public FSCollisionShape shapeA;
+			public FSCollisionShape shapeB;
+			public Contact contact; 
+		}
+		public struct SeparationEventInfo {
+			public FSCollisionShape shapeA;
+			public FSCollisionShape shapeB;
 		}
 	}
 }
