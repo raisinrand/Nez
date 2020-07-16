@@ -206,13 +206,14 @@ namespace Nez.ImGuiTools
 
 
 #if !FNA
-			Core.Instance.Window.TextInput += (s, a) =>
-			{
-				if (a.Character == '\t')
-					return;
-
-				io.AddInputCharacter(a.Character);
-			};
+			// NOT SUPPORTED
+			//TODO: REPLACE
+			// Core.Instance.Window.TextInput += (object sender, TextInputEventArgs e) =>
+			// {
+			// 	if( e.Character == '\t' )
+			// 		return;
+			// 	ImGui.GetIO().AddInputCharacter( e.Character );
+			// };
 #else
 			TextInputEXT.TextInput += c =>
 			{

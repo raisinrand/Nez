@@ -13,10 +13,10 @@ namespace Nez.ImGuiTools
 	{
 		public bool ShowDemoWindow = false;
 		public bool ShowStyleEditor = false;
-		public bool ShowSceneGraphWindow = true;
-		public bool ShowCoreWindow = true;
-		public bool ShowSeperateGameWindow = true;
-		public bool ShowMenuBar = true;
+		public bool ShowSceneGraphWindow = false;
+		public bool ShowCoreWindow = false;
+		public bool ShowSeperateGameWindow = false;
+		public bool ShowMenuBar = false;
 
 		List<Type> _sceneSubclasses = new List<Type>();
 		System.Reflection.MethodInfo[] _themes;

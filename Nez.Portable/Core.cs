@@ -257,37 +257,38 @@ namespace Nez
 						_globalManagers.Buffer[i].Update();
 				}
 
-				// read carefully:
-				// - we do not update the Scene while a SceneTransition is happening
-				// 		- unless it is SceneTransition that doesn't change Scenes (no reason not to update)
-				//		- or it is a SceneTransition that has already switched to the new Scene (the new Scene needs to do its thing)
-				if (_sceneTransition == null ||
-				    (_sceneTransition != null &&
-				     (!_sceneTransition._loadsNewScene || _sceneTransition._isNewSceneLoaded)))
-				{
+				// // read carefully:
+				// // - we do not update the Scene while a SceneTransition is happening
+				// // 		- unless it is SceneTransition that doesn't change Scenes (no reason not to update)
+				// //		- or it is a SceneTransition that has already switched to the new Scene (the new Scene needs to do its thing)
+				// if (_sceneTransition == null ||
+				//     (_sceneTransition != null &&
+				//      (!_sceneTransition._loadsNewScene || _sceneTransition._isNewSceneLoaded)))
+				// {
 					
-					timeAcc += Time.UnscaledDeltaTime;
-					int fixedUpdates = 0;
-					while ( timeAcc >= Time.FixedTimeStep )
-					{
-						// previousState = currentState;
-						timeAcc -= Time.FixedTimeStep;
-						Input.Update();
-						_scene.FixedUpdate();
-						fixedUpdates+=1;
-						if(fixedUpdates > MaxFixedUpdatesPerFrame) {
-							timeAcc = 0;
-							Debug.Log("Can't keep up! Skipping fixed updates.");
-							break;
-						}
+				timeAcc += Time.UnscaledDeltaTime;
+				int fixedUpdates = 0;
+				while ( timeAcc >= Time.FixedTimeStep )
+				{
+					// previousState = currentState;
+					timeAcc -= Time.FixedTimeStep;
+					Input.Update();
+					_scene.FixedUpdate();
+					fixedUpdates+=1;
+					if(fixedUpdates > MaxFixedUpdatesPerFrame) {
+						timeAcc = 0;
+						Debug.Log("Can't keep up! Skipping fixed updates.");
+						break;
 					}
-
-					// TODO: render data interpolation
-					// const double alpha = accumulator / dt;
-					// interpolate() ...
-
-					_scene.Update();
 				}
+
+				// TODO: render data interpolation
+				// const double alpha = accumulator / dt;
+				// interpolate() ...
+
+				_scene.Update();
+				
+				// }
 
 				if (_nextScene != null)
 				{
@@ -317,28 +318,29 @@ namespace Nez
 
 			StartDebugDraw(gameTime.ElapsedGameTime);
 
-			if (_sceneTransition != null)
-				_sceneTransition.PreRender(Graphics.Instance.Batcher);
+			// if (_sceneTransition != null)
+			// 	_sceneTransition.PreRender(Graphics.Instance.Batcher);
 
 			// special handling of SceneTransition if we have one. We either render the SceneTransition or the Scene
-			if (_sceneTransition != null)
-			{
-				if (_scene != null && _sceneTransition.WantsPreviousSceneRender &&
-				    !_sceneTransition.HasPreviousSceneRender)
-				{
-					_scene.Render();
-					_scene.PostRender(_sceneTransition.PreviousSceneRender);
-					StartCoroutine(_sceneTransition.OnBeginTransition());
-				}
-				else if (_scene != null && _sceneTransition._isNewSceneLoaded)
-				{
-					_scene.Render();
-					_scene.PostRender();
-				}
+			// if (_sceneTransition != null)
+			// {
+			// 	if (_scene != null && _sceneTransition.WantsPreviousSceneRender &&
+			// 	    !_sceneTransition.HasPreviousSceneRender)
+			// 	{
+			// 		_scene.Render();
+			// 		_scene.PostRender(_sceneTransition.PreviousSceneRender);
+			// 		StartCoroutine(_sceneTransition.OnBeginTransition());
+			// 	}
+			// 	else if (_scene != null && _sceneTransition._isNewSceneLoaded)
+			// 	{
+			// 		_scene.Render();
+			// 		_scene.PostRender();
+			// 	}
 
-				_sceneTransition.Render(Graphics.Instance.Batcher);
-			}
-			else if (_scene != null)
+			// 	_sceneTransition.Render(Graphics.Instance.Batcher);
+			// }
+			// else
+			if (_scene != null)
 			{
 				_scene.Render();
 
