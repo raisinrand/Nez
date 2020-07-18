@@ -357,8 +357,7 @@ namespace Nez.UI
 		protected void ApplyTransform(Batcher batcher, Matrix transform)
 		{
 			_previousBatcherTransform = batcher.TransformMatrix;
-			batcher.End();
-			batcher.Begin(transform);
+			Renderer.Active.SwapTransform(transform);
 		}
 
 
@@ -369,8 +368,7 @@ namespace Nez.UI
 		/// <param name="batch">Batch.</param>
 		protected void ResetTransform(Batcher batcher)
 		{
-			batcher.End();
-			batcher.Begin(_previousBatcherTransform);
+			Renderer.Active.SwapTransform(_previousBatcherTransform);
 		}
 
 

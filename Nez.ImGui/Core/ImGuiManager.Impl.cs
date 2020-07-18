@@ -69,7 +69,8 @@ namespace Nez.ImGuiTools
 
 		void Unload()
 		{
-			_drawCommands.Clear();
+			// TODO: change this if we actually use scenes, probably not
+			// _drawCommands.Clear();
 			_entityInspectors.Clear();
 
 			if (_renderTargetId != IntPtr.Zero)

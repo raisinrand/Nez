@@ -34,9 +34,11 @@ namespace Nez
 			{
 				if (_areBoundsDirty)
 				{
-					_bounds.Location = Entity.Transform.Position + _localOffset;
-					_bounds.Width = Width;
-					_bounds.Height = Height;
+					_bounds.CalculateBounds(Entity.Transform.Position, _localOffset, _origin,
+						Entity.Transform.Scale, Entity.Transform.Rotation, _sprite.SourceRect.Width,
+						_sprite.SourceRect.Height);
+					Width = _bounds.Width;
+					Height = _bounds.Height;
 					_areBoundsDirty = false;
 				}
 
@@ -54,7 +56,6 @@ namespace Nez
 
 		Rectangle[] _destRects = new Rectangle[9];
 		bool _destRectsDirty = true;
-
 
 		public NineSliceSpriteRenderer(NinePatchSprite sprite) : base(sprite)
 		{
@@ -85,7 +86,9 @@ namespace Nez
 				var dest = _destRects[i];
 				dest.X += pos.X;
 				dest.Y += pos.Y;
-				batcher.Draw(Sprite, dest, Sprite.NinePatchRects[i], Color);
+				// TODO: finish fixing this broken shit
+				batcher.Draw(Sprite, dest.Location.ToVector2(), Sprite.NinePatchRects[i], Color,
+				Entity.Transform.Rotation, Origin, Entity.Transform.Scale, SpriteEffects, _layerDepth);
 			}
 		}
 	}

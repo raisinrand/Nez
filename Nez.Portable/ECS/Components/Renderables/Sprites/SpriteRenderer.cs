@@ -98,7 +98,11 @@ namespace Nez.Sprites
 		public SpriteRenderer(Texture2D texture) : this(new Sprite(texture))
 		{ }
 
-		public SpriteRenderer(Sprite sprite) => SetSprite(sprite);
+		public SpriteRenderer(Sprite sprite) {
+			SetSprite(sprite);
+			// TODO: TEMP
+			// Material = new Material(new GrayscaleEffect());
+		} 
 
 		#region fluent setters
 
@@ -178,6 +182,7 @@ namespace Nez.Sprites
 
 		public override void Render(Batcher batcher, Camera camera)
 		{
+            // Renderer.Active.SwapMaterial(Renderer.ActiveCam,Material);
 			batcher.Draw(Sprite, Entity.Transform.Position + LocalOffset, Color,
 				Entity.Transform.Rotation, Origin, Entity.Transform.Scale, SpriteEffects, _layerDepth);
 		}

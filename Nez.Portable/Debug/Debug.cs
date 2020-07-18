@@ -41,6 +41,8 @@ namespace Nez
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+			// TODO: TEMP FOR TESTING BUILDS
+			// System.Console.WriteLine(type.ToString() + ": " + format, args);
 		}
 
 		[DebuggerHidden]
@@ -118,7 +120,7 @@ namespace Nez
 		[Conditional("DEBUG")]
 		public static void Break_()
 		{
-			Debugger.Break();
+			 
 		}
 
 		/// <summary>

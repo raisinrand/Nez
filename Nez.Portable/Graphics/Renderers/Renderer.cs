@@ -17,6 +17,9 @@ namespace Nez
 	/// </summary>
 	public abstract class Renderer : IComparable<Renderer>
 	{
+		public static Renderer Active;
+		public static Camera ActiveCam;
+
 		/// <summary>
 		/// Material used by the Batcher. Any RenderableComponent can override this.
 		/// </summary>
@@ -69,6 +72,7 @@ namespace Nez
 		/// holds the current Material of the last rendered Renderable (or the Renderer.material if no changes were made)
 		/// </summary>
 		protected Material _currentMaterial;
+		protected Matrix _transformMatrix;
 
 
 		protected Renderer(int renderOrder) : this(renderOrder, null)
@@ -99,6 +103,9 @@ namespace Nez
 		/// <param name="cam">Cam.</param>
 		protected virtual void BeginRender(Camera cam)
 		{
+			Active = this;
+			ActiveCam = cam;
+
 			// if we have a renderTarget render into it
 			if (RenderTexture != null)
 			{
@@ -107,7 +114,10 @@ namespace Nez
 			}
 
 			_currentMaterial = Material;
-			Graphics.Instance.Batcher.Begin(_currentMaterial, cam.TransformMatrix);
+			if (_currentMaterial.Effect != null)
+				_currentMaterial.OnPreRender(cam);
+			_transformMatrix = cam.TransformMatrix;
+			Graphics.Instance.Batcher.Begin(_currentMaterial, _transformMatrix);
 		}
 
 		abstract public void Render(Scene scene);
@@ -120,36 +130,45 @@ namespace Nez
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected void RenderAfterStateCheck(IRenderable renderable, Camera cam)
 		{
-			// check for Material changes
-			if (renderable.Material != null && renderable.Material != _currentMaterial)
-			{
-				_currentMaterial = renderable.Material;
-				if (_currentMaterial.Effect != null)
-					_currentMaterial.OnPreRender(cam);
-				FlushBatch(cam);
-			}
-			else if (renderable.Material == null && _currentMaterial != Material)
-			{
-				_currentMaterial = Material;
-				FlushBatch(cam);
-			}
-
+			SwapMaterial(cam,renderable.Material);
 			renderable.Render(Graphics.Instance.Batcher, cam);
 		}
 
+		public void SwapMaterial(Camera cam, Material material) {
+			if(material == null)
+				material = Material;
+
+			if (material != _currentMaterial)
+			{
+				_currentMaterial = material;
+				if (_currentMaterial.Effect != null)
+					_currentMaterial.OnPreRender(cam);
+				FlushBatch();
+			}
+		}
+
+		public void SwapTransform(Matrix transform)
+		{
+			_transformMatrix = transform;
+			FlushBatch();
+		}
 		/// <summary>
 		/// force flushes the Batcher by calling End then Begin on it.
 		/// </summary>
-		void FlushBatch(Camera cam)
+		void FlushBatch()
 		{
 			Graphics.Instance.Batcher.End();
-			Graphics.Instance.Batcher.Begin(_currentMaterial, cam.TransformMatrix);
+			Graphics.Instance.Batcher.Begin(_currentMaterial, _transformMatrix);
 		}
 
 		/// <summary>
 		/// ends the Batcher and clears the RenderTarget if it had a RenderTarget
 		/// </summary>
-		protected virtual void EndRender() => Graphics.Instance.Batcher.End();
+		protected virtual void EndRender() {
+			Graphics.Instance.Batcher.End();
+			Active = null;
+			ActiveCam = null;
+		}
 
 		/// <summary>
 		/// default debugRender method just loops through all entities and calls entity.debugRender. Note that you are in the middle of a batch

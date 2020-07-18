@@ -48,7 +48,7 @@ namespace Nez.ImGuiTools
 			_gameWindowTitle = options._gameWindowTitle;
 			_gameWindowFlags = options._gameWindowFlags;
 
-			LoadSettings();
+			// LoadSettings();
 			_renderer = new ImGuiRenderer(Core.Instance);
 
 			_renderer.RebuildFontAtlas(options);
@@ -65,6 +65,13 @@ namespace Nez.ImGuiTools
 			// find all themes
 			_themes = typeof(NezImGuiThemes).GetMethods(System.Reflection.BindingFlags.Static |
 			                                            System.Reflection.BindingFlags.Public);
+		
+
+			
+			// unsafe {
+			// 	ImGui.GetIO().NativePtr->IniFilename = null;
+			// }
+
 		}
 
 		/// <summary>

@@ -61,6 +61,8 @@ namespace Nez
 		{
 			Stage.Render(batcher, camera);
 		}
+		
+		public override bool IsVisibleFromCamera(Camera camera) => true;
 
 
 		public override void DebugRender(Batcher batcher)

@@ -72,7 +72,6 @@ namespace Nez.UI
 				col *= (color.A / 255f);
 			if (col.A != 255)
 				col *= (col.A / 255f);
-
 			if (UseFilledRect)
 				batcher.DrawRect(x, y, width, height, col);
 			else
