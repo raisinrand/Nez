@@ -260,10 +260,12 @@ namespace Nez
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void ReplaceComponent(Component replacement)
 		{
+			replacement.Entity = _entity;
 			for (var i = 0; i < _components.Length; i++)
 			{
 				var component = _components.Buffer[i];
 				if (replacement.GetType() == component.GetType()) {
+					component.Entity = null;
 					_components.Buffer[i] = replacement;
 					return;
 				}

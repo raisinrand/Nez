@@ -265,6 +265,13 @@ namespace Nez.Farseer
 			Body = null;
 		}
 
+		public void IgnoreCollisionWith(FSRigidBody other) {
+			Body.IgnoreCollisionWith(other.Body);
+		}
+		public void RestoreCollisionWith(FSRigidBody other) {
+			Body.RestoreCollisionWith(other.Body);
+		}
+
 		bool OnCollisionEvent(Fixture fixtureA, Fixture fixtureB, Contact contact) {
 			collisionEvents.Add(new CollisionEventInfo {
 				other = (FSCollisionShape)fixtureB.UserData,
