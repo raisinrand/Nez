@@ -9,7 +9,7 @@ namespace Nez.Farseer
 	public class FSRigidBody : Component
 	{
 		public Body Body;
-
+ 
 		FSBodyDef _bodyDef = new FSBodyDef();
 		bool _ignoreTransformChanges;
 		internal List<FSJoint> _joints = new List<FSJoint>();
@@ -20,6 +20,7 @@ namespace Nez.Farseer
 		List<SeparationEventInfo> separationEvents = new List<SeparationEventInfo>();
 		public IEnumerable<SeparationEventInfo> SeparationEvents => separationEvents;
 
+		public IEnumerable<ContactInfo> ContactList => EnumerateContactList();
 
 		#region Configuration
 
@@ -266,16 +267,14 @@ namespace Nez.Farseer
 
 		bool OnCollisionEvent(Fixture fixtureA, Fixture fixtureB, Contact contact) {
 			collisionEvents.Add(new CollisionEventInfo {
-				shapeA = (FSCollisionShape)fixtureA.UserData,
-				shapeB = (FSCollisionShape)fixtureB.UserData,
+				other = (FSCollisionShape)fixtureB.UserData,
 				contact = contact
 			});
 			return true;
 		}
 		void OnSeparationEvent(Fixture fixtureA, Fixture fixtureB) {
 			separationEvents.Add(new SeparationEventInfo {
-				shapeA = (FSCollisionShape)fixtureA.UserData,
-				shapeB = (FSCollisionShape)fixtureB.UserData,
+				other = (FSCollisionShape)fixtureB.UserData,
 			});
 		}
 
@@ -286,14 +285,31 @@ namespace Nez.Farseer
 		}
 
 
+		IEnumerable<ContactInfo> EnumerateContactList() {
+			var first = Body.ContactList;
+			var current = first;
+			while(current != null) {
+				var res = new ContactInfo {
+					other = (FSRigidBody)current.Other.UserData,
+					contact = current.Contact
+				};
+				current = current.Next;
+				yield return res;
+			}
+			yield break;
+		}
+
+
 		public struct CollisionEventInfo {
-			public FSCollisionShape shapeA;
-			public FSCollisionShape shapeB;
+			public FSCollisionShape other;
+			public Contact contact; 
+		}
+		public struct ContactInfo {
+			public FSRigidBody other;
 			public Contact contact; 
 		}
 		public struct SeparationEventInfo {
-			public FSCollisionShape shapeA;
-			public FSCollisionShape shapeB;
+			public FSCollisionShape other;
 		}
 	}
 }
