@@ -194,7 +194,8 @@ namespace Nez.UI
 				_lastMousePosition = currentMousePosition;
 			}
 
-			var inputPos = ScreenToStageCoordinates(currentMousePosition);
+			// var inputPos = ScreenToStageCoordinates(currentMousePosition);
+			var inputPos = currentMousePosition;
 
 			UpdateInputPoint(inputPos, Input.LeftMouseButtonPressed, Input.LeftMouseButtonReleased,
 				mouseMoved, ref _mouseOverElement);
@@ -208,7 +209,8 @@ namespace Nez.UI
 		{
 			foreach (var touch in Input.Touch.CurrentTouches)
 			{
-				var inputPos = ScreenToStageCoordinates(touch.Position);
+				// var inputPos = ScreenToStageCoordinates(touch.Position);
+				var inputPos = touch.Position;
 				var inputPressed = touch.State == Microsoft.Xna.Framework.Input.Touch.TouchLocationState.Pressed;
 				var inputReleased = touch.State == Microsoft.Xna.Framework.Input.Touch.TouchLocationState.Released ||
 				                    touch.State == Microsoft.Xna.Framework.Input.Touch.TouchLocationState.Invalid;
