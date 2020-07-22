@@ -303,7 +303,6 @@ namespace Nez.Farseer
 				current = current.Next;
 				yield return res;
 			}
-			yield break;
 		}
 
 
