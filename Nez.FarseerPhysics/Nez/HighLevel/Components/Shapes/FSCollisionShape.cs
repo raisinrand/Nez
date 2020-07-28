@@ -170,6 +170,8 @@ namespace Nez.Farseer
 			if (rigidBody == null || rigidBody.Body == null)
 				return;
 
+
+			rigidBody.UnsetCallbacks();
 			var body = rigidBody.Body;
 			_fixtureDef.Shape.Density = _fixtureDef.Density;
 			_fixture = body.CreateFixture(_fixtureDef.Shape, this);
@@ -180,6 +182,7 @@ namespace Nez.Farseer
 			_fixture.CollisionCategories = _fixtureDef.CollisionCategories;
 			_fixture.IgnoreCCDWith = _fixtureDef.IgnoreCCDWith;
 			_fixture.CollisionGroup = _fixtureDef.CollisionGroup;
+			rigidBody.SetCallbacks();
 		}
 
 

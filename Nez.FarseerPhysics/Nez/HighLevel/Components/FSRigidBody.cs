@@ -244,11 +244,18 @@ namespace Nez.Farseer
 
 			for (var i = 0; i < _joints.Count; i++)
 				_joints[i].CreateJoint();
+			
+			SetCallbacks();
+		}
 
+		public void SetCallbacks() {
 			Body.OnCollision += OnCollisionEvent;
 			Body.OnSeparation += OnSeparationEvent;
 		}
-
+		public void UnsetCallbacks() {
+			Body.OnCollision -= OnCollisionEvent;
+			Body.OnSeparation -= OnSeparationEvent;
+		}
 
 		void DestroyBody()
 		{
@@ -260,6 +267,8 @@ namespace Nez.Farseer
 			for (var i = 0; i < collisionShapes.Count; i++)
 				collisionShapes[i].DestroyFixture();
 			ListPool<FSCollisionShape>.Free(collisionShapes);
+			
+			UnsetCallbacks();
 
 			Body.World.RemoveBody(Body);
 			Body = null;
@@ -273,15 +282,30 @@ namespace Nez.Farseer
 		}
 
 		bool OnCollisionEvent(Fixture fixtureA, Fixture fixtureB, Contact contact) {
+			var shape = (FSCollisionShape)fixtureA.UserData;
+			var otherShape = (FSCollisionShape)fixtureB.UserData;
 			collisionEvents.Add(new CollisionEventInfo {
-				other = (FSCollisionShape)fixtureB.UserData,
+				other = otherShape,
 				contact = contact
 			});
+			// TODO: concern here because contact data can come from other body
+			// var otherBody = otherShape.GetComponent<FSRigidBody>();
+			// otherBody.collisionEvents.Add(new CollisionEventInfo {
+			// 	other = shape,
+			// 	contact = contact
+			// });
+			
 			return true;
 		}
 		void OnSeparationEvent(Fixture fixtureA, Fixture fixtureB) {
+			var shape = (FSCollisionShape)fixtureA.UserData;
+			var otherShape = (FSCollisionShape)fixtureB.UserData;
 			separationEvents.Add(new SeparationEventInfo {
-				other = (FSCollisionShape)fixtureB.UserData,
+				other = otherShape,
+			});
+			var otherBody = otherShape.GetComponent<FSRigidBody>();
+			otherBody.separationEvents.Add(new SeparationEventInfo {
+				other = shape
 			});
 		}
 
