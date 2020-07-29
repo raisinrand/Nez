@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 
 namespace Nez
@@ -11,7 +12,8 @@ namespace Nez
 		/// <summary>
 		/// total time the game has been running
 		/// </summary>
-		public static float TotalTime;
+		public static float TotalTime => IsFixedUpdate ? throw new NotImplementedException() : totalTime;
+		static float totalTime;
 
 		/// <summary>
 		/// delta time from the previous frame to the current, scaled by timeScale
@@ -54,7 +56,7 @@ namespace Nez
 		internal static void Update(float dt)
 		{
 			Time.dt = dt;
-			TotalTime += dt;
+			totalTime += dt;
 			TimeSinceSceneLoad += dt;
 			FrameCount++;
 		}
