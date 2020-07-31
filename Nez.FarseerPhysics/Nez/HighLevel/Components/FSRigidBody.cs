@@ -19,8 +19,8 @@ namespace Nez.Farseer
 		public IEnumerable<CollisionEventInfo> CollisionEvents => collisionEvents;
 		List<SeparationEventInfo> separationEvents = new List<SeparationEventInfo>();
 		public IEnumerable<SeparationEventInfo> SeparationEvents => separationEvents;
-
-		public IEnumerable<ContactInfo> ContactList => EnumerateContactList();
+		List<ContactInfo> contactList = new List<ContactInfo>();
+		public IEnumerable<ContactInfo> ContactList => contactList;
 
 		#region Configuration
 
@@ -281,53 +281,65 @@ namespace Nez.Farseer
 			Body.RestoreCollisionWith(other.Body);
 		}
 
-		bool OnCollisionEvent(Fixture fixtureA, Fixture fixtureB, Contact contact) {
+		bool OnCollisionEvent(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact) {
 			var shape = (FSCollisionShape)fixtureA.UserData;
 			var otherShape = (FSCollisionShape)fixtureB.UserData;
-			collisionEvents.Add(new CollisionEventInfo {
+			AddCollisionEvent(new CollisionEventInfo {
 				other = otherShape,
-				contact = contact
+				contact = ConvertContact(contact)
 			});
-			// TODO: concern here because contact data can come from other body
-			// var otherBody = otherShape.GetComponent<FSRigidBody>();
-			// otherBody.collisionEvents.Add(new CollisionEventInfo {
-			// 	other = shape,
-			// 	contact = contact
-			// });
-			
 			return true;
 		}
 		void OnSeparationEvent(Fixture fixtureA, Fixture fixtureB) {
 			var shape = (FSCollisionShape)fixtureA.UserData;
 			var otherShape = (FSCollisionShape)fixtureB.UserData;
-			separationEvents.Add(new SeparationEventInfo {
+			AddSeparationEvent(new SeparationEventInfo {
 				other = otherShape,
 			});
-			var otherBody = otherShape.GetComponent<FSRigidBody>();
-			otherBody.separationEvents.Add(new SeparationEventInfo {
-				other = shape
-			});
+		}
+
+		Contact ConvertContact(FarseerPhysics.Dynamics.Contacts.Contact contact) {
+			return new Contact {
+				IsTouching = contact.IsTouching
+			};
+		}
+
+		public void AddContact(ContactInfo c) {
+			contactList.Add(c);
+		}
+		public void AddCollisionEvent(CollisionEventInfo c) {
+			collisionEvents.Add(c);
+		}
+		public void AddSeparationEvent(SeparationEventInfo c) {
+			separationEvents.Add(c);
 		}
 
 
 		public void Reset() {
 			collisionEvents.Clear();
 			separationEvents.Clear();
+			contactList.Clear();
 		}
 
 
+		public void UpdateContactList() {
+			foreach(var contactInfo in EnumerateContactList()) {
+				AddContact(contactInfo);
+			}
+		}
 		IEnumerable<ContactInfo> EnumerateContactList() {
 			var first = Body.ContactList;
 			var current = first;
 			while(current != null) {
 				var res = new ContactInfo {
 					other = (FSRigidBody)current.Other.UserData,
-					contact = current.Contact
+					contact = ConvertContact(current.Contact)
 				};
 				current = current.Next;
 				yield return res;
 			}
 		}
+
 
 
 		public struct CollisionEventInfo {
@@ -340,6 +352,9 @@ namespace Nez.Farseer
 		}
 		public struct SeparationEventInfo {
 			public FSCollisionShape other;
+		}
+		public struct Contact {
+			public bool IsTouching;	
 		}
 	}
 }
