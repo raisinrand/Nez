@@ -291,25 +291,21 @@ namespace Nez
 				var child = Transform.GetChild(i);
 				child.Entity.Destroy();
 			}
-
-			// TODO: make this happen immediately. some issues if we do that rn.
-			// DetachFromScene();
-			// OnRemovedFromScene();
 		}
 
-		/// <summary>
-		/// detaches the Entity from the scene.
-		/// the following lifecycle method will be called on the Entity: OnRemovedFromScene
-		/// the following lifecycle method will be called on the Components: OnRemovedFromEntity
-		/// </summary>
-		public void DetachFromScene()
-		{
-			Scene.Entities.Remove(this);
-			Components.DeregisterAllComponents();
+		// /// <summary>
+		// /// detaches the Entity from the scene.
+		// /// the following lifecycle method will be called on the Entity: OnRemovedFromScene
+		// /// the following lifecycle method will be called on the Components: OnRemovedFromEntity
+		// /// </summary>
+		// public void DetachFromScene()
+		// {
+		// 	Scene.Entities.Remove(this);
+		// 	Components.DeregisterAllComponents();
 
-			for (var i = 0; i < Transform.ChildCount; i++)
-				Transform.GetChild(i).Entity.DetachFromScene();
-		}
+		// 	for (var i = 0; i < Transform.ChildCount; i++)
+		// 		Transform.GetChild(i).Entity.DetachFromScene();
+		// }
 
 		/// <summary>
 		/// attaches an Entity that was previously detached to a new scene
