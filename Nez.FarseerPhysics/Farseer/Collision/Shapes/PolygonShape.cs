@@ -81,7 +81,7 @@ namespace FarseerPhysics.Collision.Shapes
 			_normals = new Vertices(Settings.MaxPolygonVertices);
 		}
 
-		internal PolygonShape() : base(0)
+		public PolygonShape() : base(0)
 		{
 			ShapeType = ShapeType.Polygon;
 			_radius = Settings.PolygonRadius;

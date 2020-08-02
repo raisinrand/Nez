@@ -92,7 +92,7 @@ namespace FarseerPhysics.Collision.Shapes
 		internal Vector2 _vertex2;
 
 
-		internal EdgeShape() : base(0)
+		public EdgeShape() : base(0)
 		{
 			ShapeType = ShapeType.Edge;
 			_radius = Settings.PolygonRadius;

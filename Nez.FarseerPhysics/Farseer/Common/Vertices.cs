@@ -50,7 +50,7 @@ namespace FarseerPhysics.Common
 	[DebuggerDisplay("Count = {Count} Vertices = {ToString()}")]
 	public class Vertices : List<Vector2>
 	{
-		internal bool attachedToBody;
+		public bool attachedToBody;
 
 		/// <summary>
 		/// You can add holes to this collection.

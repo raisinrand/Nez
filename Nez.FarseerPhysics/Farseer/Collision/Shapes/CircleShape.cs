@@ -67,7 +67,7 @@ namespace FarseerPhysics.Collision.Shapes
 				radius; // The Radius property cache 2radius and calls ComputeProperties(). So no need to call ComputeProperties() here.
 		}
 
-		internal CircleShape() : base(0)
+		public CircleShape() : base(0)
 		{
 			ShapeType = ShapeType.Circle;
 			_radius = 0.0f;
