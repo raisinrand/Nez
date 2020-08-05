@@ -54,7 +54,7 @@ namespace Nez
 		/// <summary>
 		/// the maximum number of fixed updates allowed in a frame before giving up and skipping time
 		/// </summary>
-		public int MaxFixedUpdatesPerFrame {get;set;} = 5;
+		public int MaxFixedUpdatesPerFrame {get;set;} = 30;
 
 		/// <summary>
 		/// default SamplerState used by Materials. Note that this must be set at launch! Changing it after that time will result in only
@@ -227,8 +227,14 @@ namespace Nez
 			Graphics.Instance = new Graphics(font);
 		}
 
+		DateTime lastUpdateTime;
+
 		protected override void Update(GameTime gameTime)
 		{
+			DateTime time = DateTime.UtcNow;
+			var realDelta = time - lastUpdateTime;
+
+
 			if (PauseOnFocusLost && !IsActive)
 			{
 				SuppressDraw();
@@ -266,7 +272,7 @@ namespace Nez
 				//      (!_sceneTransition._loadsNewScene || _sceneTransition._isNewSceneLoaded)))
 				// {
 					
-				timeAcc += Time.UnscaledDeltaTime;
+				timeAcc += (float)realDelta.TotalSeconds;
 				int fixedUpdates = 0;
 				while ( timeAcc >= Time.FixedTimeStep )
 				{
@@ -274,9 +280,10 @@ namespace Nez
 					timeAcc -= Time.FixedTimeStep;
 					Input.Update();
 					_scene.FixedUpdate();
-					fixedUpdates+=1;
+					fixedUpdates++;
 					if(fixedUpdates > MaxFixedUpdatesPerFrame) {
 						timeAcc = 0;
+						// TODO: UPDATE NET MANAGER FRAME TICKS ANYWAY THO
 						Debug.Log("Can't keep up! Skipping fixed updates.");
 						break;
 					}
@@ -304,6 +311,7 @@ namespace Nez
 
 			EndDebugUpdate();
 
+			lastUpdateTime = time;
 #if FNA
 			// MonoGame only updates old-school XNA Components in Update which we dont care about. FNA's core FrameworkDispatcher needs
 			// Update called though so we do so here.

@@ -429,7 +429,7 @@ namespace Nez
 			RenderableComponents.UpdateLists();
 		}
 
-		internal void Render()
+		public virtual void Render()
 		{
 			if (_renderers.Length == 0)
 			{
