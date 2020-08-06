@@ -231,7 +231,7 @@ namespace Nez
 
 		protected override void Update(GameTime gameTime)
 		{
-			DateTime time = DateTime.Now;
+			DateTime time = DateTime.UtcNow;
 			var realDelta = time - lastUpdateTime;
 
 
