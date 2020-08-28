@@ -7,7 +7,7 @@
     <RootNamespace>Nez.Farseer</RootNamespace>
     <AssemblyName>Nez.FarseerPhysics</AssemblyName>
     <OutputType>Library</OutputType>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IntermediateOutputPath>obj\Nez.FarseerPhysics\$(Configuration)</IntermediateOutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -25,7 +25,7 @@
     <ProjectReference Include="..\Nez.Portable\Nez.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="all" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.*" PrivateAssets="all" />
   </ItemGroup>
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
 </Project>
