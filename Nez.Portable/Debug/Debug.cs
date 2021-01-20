@@ -21,28 +21,28 @@ namespace Nez
 		[DebuggerHidden]
 		static void Log(LogType type, string format, params object[] args)
 		{
-			switch (type)
-			{
-				case LogType.Error:
-					System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
-					break;
-				case LogType.Warn:
-					System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
-					break;
-				case LogType.Log:
-					System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
-					break;
-				case LogType.Info:
-					System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
-					break;
-				case LogType.Trace:
-					System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+			// switch (type)
+			// {
+			// 	case LogType.Error:
+			// 		System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
+			// 		break;
+			// 	case LogType.Warn:
+			// 		System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
+			// 		break;
+			// 	case LogType.Log:
+			// 		System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
+			// 		break;
+			// 	case LogType.Info:
+			// 		System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
+			// 		break;
+			// 	case LogType.Trace:
+			// 		System.Diagnostics.Debug.WriteLine(type.ToString() + ": " + format, args);
+			// 		break;
+			// 	default:
+			// 		throw new ArgumentOutOfRangeException();
+			// }
 			// TODO: TEMP FOR TESTING BUILDS
-			// System.Console.WriteLine(type.ToString() + ": " + format, args);
+			System.Console.WriteLine(type.ToString() + ": " + format, args);
 		}
 
 		[DebuggerHidden]
